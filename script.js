@@ -107,7 +107,7 @@ onAuthStateChanged(auth, (user) => {
         navLogout.classList.remove('hidden');
         
         // 관리자(ehdek) 계정인지 확인하여 글쓰기 권한 부여
-        if (user.email === 'ehdek@ourclass.com') {
+        if (user.email && user.email.toLowerCase() === 'ehdek@ourclass.com') {
             writeArea.classList.remove('hidden');
             navAdmin.classList.remove('hidden');
         } else {
@@ -127,7 +127,7 @@ onAuthStateChanged(auth, (user) => {
 // 가정통신문 글쓰기 (Firestore 저장)
 window.addNotice = async function() {
     // 관리자 권한 체크
-    if (!auth.currentUser || auth.currentUser.email !== 'ehdek@ourclass.com') {
+    if (!auth.currentUser || auth.currentUser.email.toLowerCase() !== 'ehdek@ourclass.com') {
         return alert("관리자만 작성할 수 있습니다.");
     }
 
