@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
 // Firebase 설정 (제공해주신 코드)
 const firebaseConfig = {
@@ -47,6 +47,14 @@ window.signup = async function() {
         // 사용자 이름(닉네임) 저장
         await updateProfile(userCredential.user, { displayName: name });
 
+        // Firestore에 사용자 정보 저장 (관리자 관리용)
+        await addDoc(collection(db, "users"), {
+            name: name,
+            email: email,
+            uid: userCredential.user.uid,
+            joinedAt: new Date().toISOString().split('T')[0]
+        });
+
         alert('가입이 완료되었습니다! 로그인해주세요.');
         window.showPage('login');
     } catch (error) {
@@ -90,24 +98,39 @@ onAuthStateChanged(auth, (user) => {
     const navSignup = document.getElementById('nav-signup');
     const navLogout = document.getElementById('nav-logout');
     const writeArea = document.getElementById('write-area');
+    const navAdmin = document.getElementById('nav-admin');
 
     if (user) {
         // 로그인 상태
         navLogin.classList.add('hidden');
         navSignup.classList.add('hidden');
         navLogout.classList.remove('hidden');
-        writeArea.classList.remove('hidden');
+        
+        // 관리자(ehdek) 계정인지 확인하여 글쓰기 권한 부여
+        if (user.email === 'ehdek@ourclass.com') {
+            writeArea.classList.remove('hidden');
+            navAdmin.classList.remove('hidden');
+        } else {
+            writeArea.classList.add('hidden');
+            navAdmin.classList.add('hidden');
+        }
     } else {
         // 로그아웃 상태
         navLogin.classList.remove('hidden');
         navSignup.classList.remove('hidden');
         navLogout.classList.add('hidden');
         writeArea.classList.add('hidden');
+        navAdmin.classList.add('hidden');
     }
 });
 
 // 가정통신문 글쓰기 (Firestore 저장)
 window.addNotice = async function() {
+    // 관리자 권한 체크
+    if (!auth.currentUser || auth.currentUser.email !== 'ehdek@ourclass.com') {
+        return alert("관리자만 작성할 수 있습니다.");
+    }
+
     const title = document.getElementById('notice-title').value;
     const content = document.getElementById('notice-content').value;
     
@@ -147,3 +170,35 @@ onSnapshot(q, (snapshot) => {
         list.insertAdjacentHTML('beforeend', html);
     });
 });
+
+// 회원 관리 목록 실시간 동기화 (관리자용)
+const userQ = query(collection(db, "users"), orderBy("joinedAt", "desc"));
+onSnapshot(userQ, (snapshot) => {
+    const list = document.getElementById('user-list');
+    if (!list) return;
+    list.innerHTML = "";
+
+    snapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const html = `
+            <div class="notice-item" style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <span class="notice-date">${data.joinedAt}</span>
+                    <div class="notice-title">${data.name} (${data.email.split('@')[0]})</div>
+                </div>
+                <button onclick="deleteUser('${docSnap.id}')" style="background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">삭제</button>
+            </div>
+        `;
+        list.insertAdjacentHTML('beforeend', html);
+    });
+});
+
+window.deleteUser = async function(docId) {
+    if (!confirm("정말 이 회원 정보를 목록에서 삭제하시겠습니까?")) return;
+    try {
+        await deleteDoc(doc(db, "users", docId));
+        alert("삭제되었습니다.");
+    } catch (e) {
+        alert("삭제 실패: " + e.message);
+    }
+}

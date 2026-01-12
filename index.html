@@ -18,6 +18,7 @@
         <button onclick="showPage('notice')">가정통신문</button>
         <button id="nav-login" onclick="showPage('login')">로그인</button>
         <button id="nav-signup" onclick="showPage('signup')">회원가입</button>
+        <button id="nav-admin" onclick="showPage('admin')" class="hidden">회원관리</button>
         <button id="nav-logout" onclick="logout()" class="hidden">로그아웃</button>
     </nav>
 
@@ -66,6 +67,12 @@
             <input type="password" id="signup-pw" placeholder="비밀번호">
             <input type="text" id="signup-name" placeholder="이름 (예: 홍길동)">
             <button class="primary" onclick="signup()">가입하기</button>
+        </div>
+
+        <!-- 관리자 회원관리 화면 -->
+        <div id="admin" class="page">
+            <h2>👥 회원 관리</h2>
+            <div id="user-list"></div>
         </div>
     </main>
 
