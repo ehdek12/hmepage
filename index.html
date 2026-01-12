@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>우리반 홈페이지 (6학년)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>🏫 6학년 우리반 홈페이지</h1>
+        <p>즐거운 학교생활, 함께 나누는 이야기</p>
+    </header>
+
+    <nav>
+        <button onclick="showPage('home')">홈</button>
+        <button onclick="showPage('notice')">가정통신문</button>
+        <button id="nav-login" onclick="showPage('login')">로그인</button>
+        <button id="nav-signup" onclick="showPage('signup')">회원가입</button>
+        <button id="nav-logout" onclick="logout()" class="hidden">로그아웃</button>
+    </nav>
+
+    <main>
+        <!-- 홈 화면 -->
+        <div id="home" class="page active">
+            <h2>환영합니다! 👋</h2>
+            <p>우리반 친구들을 위한 소통 공간입니다.</p>
+            <p>가정통신문을 확인하고, 친구들과 즐겁게 지내요!</p>
+            <div style="text-align: center; margin-top: 50px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/3413/3413535.png" alt="School" width="150">
+            </div>
+        </div>
+
+        <!-- 가정통신문 화면 -->
+        <div id="notice" class="page">
+            <h2>📢 가정통신문 & 알림장</h2>
+            <div id="write-area" class="hidden">
+                <input type="text" id="notice-title" placeholder="제목을 입력하세요">
+                <textarea id="notice-content" rows="4" placeholder="내용을 입력하세요"></textarea>
+                <button class="primary" onclick="addNotice()">글쓰기</button>
+                <hr>
+            </div>
+            <div id="notice-list">
+                <!-- 게시글이 여기에 추가됩니다 -->
+                <div class="notice-item">
+                    <span class="notice-date">2023-10-27</span>
+                    <div class="notice-title">홈페이지 개설 안내</div>
+                    <p>우리반 홈페이지가 만들어졌습니다. 가입해주세요!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 로그인 화면 -->
+        <div id="login" class="page">
+            <h2>로그인</h2>
+            <input type="text" id="login-id" placeholder="아이디">
+            <input type="password" id="login-pw" placeholder="비밀번호">
+            <button class="primary" onclick="login()">로그인 하기</button>
+        </div>
+
+        <!-- 회원가입 화면 -->
+        <div id="signup" class="page">
+            <h2>회원가입</h2>
+            <input type="text" id="signup-id" placeholder="아이디 (예: kim123)">
+            <input type="password" id="signup-pw" placeholder="비밀번호">
+            <input type="text" id="signup-name" placeholder="이름 (예: 홍길동)">
+            <button class="primary" onclick="signup()">가입하기</button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+/* 전체 스타일 */
+body {
+    font-family: 'Jua', 'Malgun Gothic', sans-serif; /* 귀여운 폰트 권장 */
+    margin: 0;
+    padding: 0;
+    background-color: #f0f8ff;
+    color: #333;
+}
+
+/* 헤더 및 네비게이션 */
+header {
+    background-color: #4facfe;
+    background-image: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+nav {
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+nav button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 15px;
+    cursor: pointer;
+    color: #555;
+    padding: 10px 20px;
+    border-radius: 20px;
+    transition: background 0.3s;
+}
+
+nav button:hover {
+    background-color: #e0f7fa;
+    color: #007bff;
+}
+
+/* 메인 컨텐츠 영역 */
+main {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    min-height: 400px;
+}
+
+.page {
+    display: none; /* 기본적으로 숨김 */
+}
+
+.page.active {
+    display: block; /* 활성화된 페이지만 보임 */
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+h2 {
+    color: #007bff;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* 폼 스타일 (로그인, 회원가입, 글쓰기) */
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+button.primary {
+    background-color: #4facfe;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+}
+
+button.primary:hover {
+    background-color: #00c6fb;
+}
+
+/* 게시판 스타일 */
+.notice-item {
+    border: 1px solid #eee;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: #fafafa;
+}
+.notice-date {
+    font-size: 12px;
+    color: #888;
+    float: right;
+}
+.notice-title {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+}
+
+/* 유틸리티 */
+.hidden { display: none !important; }
