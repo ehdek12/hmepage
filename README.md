@@ -5,11 +5,12 @@
 ## 📌 주요 기능
 - **홈 화면**: 학급 환영 메시지
 - **가정통신문**: 공지사항 확인 및 글쓰기 (로그인 시 가능)
-- **회원가입/로그인**: 브라우저 저장소(LocalStorage)를 이용한 간편 인증
+- **회원가입/로그인**: 파이어베이스 인증(Firebase Auth) 사용
 
 ## 🚀 실행 방법
 1. 이 저장소를 다운로드하거나 클론합니다.
 2. `index.html` 파일을 웹 브라우저(Chrome, Edge 등)로 엽니다.
 
 ## 🛠️ 기술 스택
-- HTML5, CSS3, JavaScript (Vanilla)
+- HTML5, CSS3, JavaScript
+- Google Firebase (Auth, Firestore)
