@@ -98,6 +98,18 @@ button.primary:hover {
     background-color: #00c6fb;
 }
 
+button.google-btn {
+    background-color: #db4437;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
 /* 게시판 스타일 */
 .notice-item {
     border: 1px solid #eee;

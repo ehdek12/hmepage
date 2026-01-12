@@ -1,7 +1,7 @@
 // Firebase SDK 라이브러리 가져오기 (CDN 방식)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-analytics.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
 
 // Firebase 설정 (제공해주신 코드)
@@ -85,6 +85,24 @@ window.login = async function() {
     }
 }
 
+// 구글 로그인 로직
+window.googleLogin = async function() {
+    const provider = new GoogleAuthProvider();
+    try {
+        const result = await signInWithPopup(auth, provider);
+        const user = result.user;
+        
+        // 구글 로그인 성공 시 Firestore에 사용자 정보 저장 (없을 경우)
+        // (간단하게 구현하기 위해 중복 체크 없이 추가하거나, 필요 시 체크 로직 추가 가능)
+        // 여기서는 로그인 성공 메시지만 띄웁니다.
+        alert(`구글 로그인 성공! 환영합니다, ${user.displayName}님.`);
+        window.showPage('home');
+    } catch (error) {
+        console.error(error);
+        alert("구글 로그인 실패: " + error.message);
+    }
+}
+
 // 로그아웃
 window.logout = async function() {
     await signOut(auth);
@@ -99,6 +117,7 @@ onAuthStateChanged(auth, (user) => {
     const navLogout = document.getElementById('nav-logout');
     const writeArea = document.getElementById('write-area');
     const navAdmin = document.getElementById('nav-admin');
+    const welcomeMsg = document.getElementById('welcome-msg');
 
     if (user) {
         // 로그인 상태
@@ -106,8 +125,11 @@ onAuthStateChanged(auth, (user) => {
         navSignup.classList.add('hidden');
         navLogout.classList.remove('hidden');
         
+        // 홈 화면에 로그인 정보 표시 (디버깅용)
+        welcomeMsg.innerText = `환영합니다! ${user.displayName || '친구'} (${user.email}) 👋`;
+        
         // 관리자(ehdek) 계정인지 확인하여 글쓰기 권한 부여
-        if (user.email && user.email.toLowerCase() === 'ehdek@ourclass.com') {
+        if (user.email && (user.email.toLowerCase() === 'ehdek@ourclass.com' || user.email.toLowerCase() === 'ehdek12345@gmail.com')) {
             writeArea.classList.remove('hidden');
             navAdmin.classList.remove('hidden');
         } else {
@@ -121,13 +143,15 @@ onAuthStateChanged(auth, (user) => {
         navLogout.classList.add('hidden');
         writeArea.classList.add('hidden');
         navAdmin.classList.add('hidden');
+        welcomeMsg.innerText = "환영합니다! 👋";
     }
 });
 
 // 가정통신문 글쓰기 (Firestore 저장)
 window.addNotice = async function() {
     // 관리자 권한 체크
-    if (!auth.currentUser || auth.currentUser.email.toLowerCase() !== 'ehdek@ourclass.com') {
+    const userEmail = auth.currentUser ? auth.currentUser.email.toLowerCase() : '';
+    if (userEmail !== 'ehdek@ourclass.com' && userEmail !== 'ehdek12345@gmail.com') {
         return alert("관리자만 작성할 수 있습니다.");
     }
 
