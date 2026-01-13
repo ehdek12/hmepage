@@ -1,82 +1,137 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>우리반 홈페이지 (6학년)</title>
+    <title>6학년 우리반 | 소통과 나눔의 공간</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
 
     <header>
-        <h1>🏫 6학년 우리반 홈페이지</h1>
-        <p>즐거운 학교생활, 함께 나누는 이야기</p>
+        <h1>🏫 우리반 홈페이지</h1>
+        <p>친구들과 함께 꾸며가는 6학년의 소중한 추억</p>
     </header>
 
-    <nav>
-        <button onclick="showPage('home')">홈</button>
-        <button onclick="showPage('notice')">가정통신문</button>
-        <button id="nav-login" onclick="showPage('login')">로그인</button>
-        <button id="nav-signup" onclick="showPage('signup')">회원가입</button>
-        <button id="nav-admin" onclick="showPage('admin')" class="hidden">회원관리</button>
-        <button id="nav-logout" onclick="logout()" class="hidden">로그아웃</button>
+    <nav id="main-nav">
+        <button onclick="showPage('home')" class="active-nav"><i class="fas fa-home"></i> 홈</button>
+        <button onclick="showPage('notice')"><i class="fas fa-bullhorn"></i> 알림장</button>
+        <button id="nav-login" onclick="showPage('login')"><i class="fas fa-sign-in-alt"></i> 로그인</button>
+        <button id="nav-signup" onclick="showPage('signup')"><i class="fas fa-user-plus"></i> 회원가입</button>
+        <button id="nav-admin" onclick="showPage('admin')" class="hidden"><i class="fas fa-users-cog"></i> 관리</button>
+        <button id="nav-logout" onclick="logout()" class="hidden"><i class="fas fa-sign-out-alt"></i> 로그아웃</button>
     </nav>
 
     <main>
         <!-- 홈 화면 -->
         <div id="home" class="page active">
-            <h2 id="welcome-msg">환영합니다! 👋</h2>
-            <p>우리반 친구들을 위한 소통 공간입니다.</p>
-            <p>가정통신문을 확인하고, 친구들과 즐겁게 지내요!</p>
-            <div style="text-align: center; margin-top: 50px;">
-                <img src="https://cdn-icons-png.flaticon.com/512/3413/3413535.png" alt="School" width="150">
+            <div class="card hero">
+                <h2 id="welcome-msg">어서와요! 👋</h2>
+                <p>우리반 친구들을 위한 특별한 소통 공간입니다.<br>오늘의 알림장을 확인하고 소식을 나누어 보세요.</p>
+
+                <img src="https://cdn-icons-png.flaticon.com/512/3413/3413535.png" alt="School" width="180">
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <i class="fas fa-calendar-check fa-2x" style="color: var(--primary); margin-bottom: 1rem;"></i>
+                        <h3>오늘의 할일</h3>
+                        <p>잊지 말아야 할 숙제와 준비물을 확인하세요.</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-comments fa-2x" style="color: var(--secondary); margin-bottom: 1rem;"></i>
+                        <h3>자유게시판</h3>
+                        <p>친구들과 즐거운 이야기를 나누어 보세요.</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- 가정통신문 화면 -->
+        <!-- 가정통신문(알림장) 화면 -->
         <div id="notice" class="page">
-            <h2>📢 가정통신문 & 알림장</h2>
-            <div id="write-area" class="hidden">
-                <input type="text" id="notice-title" placeholder="제목을 입력하세요">
-                <textarea id="notice-content" rows="4" placeholder="내용을 입력하세요"></textarea>
-                <button class="primary" onclick="addNotice()">글쓰기</button>
-                <hr>
-            </div>
-            <div id="notice-list">
-                <!-- 게시글이 여기에 추가됩니다 -->
-                <div class="notice-item">
-                    <span class="notice-date">2023-10-27</span>
-                    <div class="notice-title">홈페이지 개설 안내</div>
-                    <p>우리반 홈페이지가 만들어졌습니다. 가입해주세요!</p>
+            <div class="card">
+                <h2>📢 가정통신문 & 알림장</h2>
+                <div id="write-area" class="hidden">
+                    <div class="form-group">
+                        <label for="notice-title">제목</label>
+                        <input type="text" id="notice-title" placeholder="제목을 입력하세요">
+                    </div>
+                    <div class="form-group">
+                        <label for="notice-content">내용</label>
+                        <textarea id="notice-content" rows="4" placeholder="내용을 입력하세요"></textarea>
+                    </div>
+                    <button class="primary" onclick="addNotice()"><i class="fas fa-paper-plane"></i> 작성하기</button>
+                    <div class="divider"></div>
+                </div>
+                <div id="notice-list">
+                    <!-- 게시글이 여기에 추가되거나 로딩 표시가 나타납니다 -->
+                    <div class="text-center" style="padding: 2rem; color: var(--text-muted);">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p style="margin-top:1rem;">소식을 불러오는 중입니다...</p>
+                    </div>
                 </div>
             </div>
         </div>
 
         <!-- 로그인 화면 -->
         <div id="login" class="page">
-            <h2>로그인</h2>
-            <input type="text" id="login-id" placeholder="아이디">
-            <input type="password" id="login-pw" placeholder="비밀번호">
-            <button class="primary" onclick="login()">로그인 하기</button>
-            <button class="google-btn" onclick="googleLogin()">G 구글 계정으로 로그인</button>
+            <div class="card auth-card">
+                <h2>로그인</h2>
+                <div class="form-group">
+                    <label>아이디</label>
+                    <input type="text" id="login-id" placeholder="아이디를 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label>비밀번호</label>
+                    <input type="password" id="login-pw" placeholder="비밀번호를 입력하세요">
+                </div>
+                <button class="primary" onclick="login()">로그인</button>
+                <button class="google-btn" onclick="googleLogin()">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/pwa/google.svg" width="18"
+                        alt="Google">
+                    구글 계정으로 로그인
+                </button>
+            </div>
         </div>
 
         <!-- 회원가입 화면 -->
         <div id="signup" class="page">
-            <h2>회원가입</h2>
-            <input type="text" id="signup-id" placeholder="아이디 (예: kim123)">
-            <input type="password" id="signup-pw" placeholder="비밀번호">
-            <input type="text" id="signup-name" placeholder="이름 (예: 홍길동)">
-            <button class="primary" onclick="signup()">가입하기</button>
+            <div class="card auth-card">
+                <h2>회원가입</h2>
+                <div class="form-group">
+                    <label>아이디</label>
+                    <input type="text" id="signup-id" placeholder="사용할 아이디 (예: kim123)">
+                </div>
+                <div class="form-group">
+                    <label>비밀번호</label>
+                    <input type="password" id="signup-pw" placeholder="비밀번호 (6자리 이상)">
+                </div>
+                <div class="form-group">
+                    <label>이름</label>
+                    <input type="text" id="signup-name" placeholder="실명을 입력하세요">
+                </div>
+                <button class="primary" onclick="signup()">가입하기</button>
+            </div>
         </div>
 
         <!-- 관리자 회원관리 화면 -->
         <div id="admin" class="page">
-            <h2>👥 회원 관리</h2>
-            <div id="user-list"></div>
+            <div class="card">
+                <h2>👥 회원 관리</h2>
+                <div id="user-list">
+                    <!-- 회원 목록이 여기에 로드됩니다 -->
+                </div>
+            </div>
         </div>
     </main>
 
+    <footer style="text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.9rem;">
+        &copy; 2026 6학년 우리반 홈페이지. All rights reserved.
+    </footer>
+
     <script type="module" src="script.js"></script>
 </body>
+
 </html>

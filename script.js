@@ -6,13 +6,13 @@ import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, deleteDoc
 
 // Firebase 설정 (제공해주신 코드)
 const firebaseConfig = {
-  apiKey: "AIzaSyA6cWZ4aNx-H2h3-qUQMkvwBbWNueDhYI8",
-  authDomain: "homepage-7d350.firebaseapp.com",
-  projectId: "homepage-7d350",
-  storageBucket: "homepage-7d350.firebasestorage.app",
-  messagingSenderId: "118674982714",
-  appId: "1:118674982714:web:b71dd915ed34b46ddc7203",
-  measurementId: "G-HE0WTCEV0H"
+    apiKey: "AIzaSyA6cWZ4aNx-H2h3-qUQMkvwBbWNueDhYI8",
+    authDomain: "homepage-7d350.firebaseapp.com",
+    projectId: "homepage-7d350",
+    storageBucket: "homepage-7d350.firebasestorage.app",
+    messagingSenderId: "118674982714",
+    appId: "1:118674982714:web:b71dd915ed34b46ddc7203",
+    measurementId: "G-HE0WTCEV0H"
 };
 
 // Firebase 초기화
@@ -22,14 +22,24 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // 페이지 전환 함수 (전역 객체 window에 연결)
-window.showPage = function(pageId) {
+window.showPage = function (pageId) {
     const pages = document.querySelectorAll('.page');
     pages.forEach(page => page.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
+
+    // 네비게이션 버튼 활성화 스타일 업데이트
+    const navButtons = document.querySelectorAll('#main-nav button');
+    navButtons.forEach(btn => {
+        btn.classList.remove('active-nav');
+        // 버튼의 onclick 속성에 해당 pageId가 포함되어 있는지 확인
+        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`'${pageId}'`)) {
+            btn.classList.add('active-nav');
+        }
+    });
 }
 
 // 회원가입 로직
-window.signup = async function() {
+window.signup = async function () {
     const id = document.getElementById('signup-id').value;
     const pw = document.getElementById('signup-pw').value;
     const name = document.getElementById('signup-name').value;
@@ -43,7 +53,7 @@ window.signup = async function() {
         // 아이디를 이메일 형식으로 변환 (예: kim123 -> kim123@ourclass.com)
         const email = id + "@ourclass.com";
         const userCredential = await createUserWithEmailAndPassword(auth, email, pw);
-        
+
         // 사용자 이름(닉네임) 저장
         await updateProfile(userCredential.user, { displayName: name });
 
@@ -69,10 +79,10 @@ window.signup = async function() {
 }
 
 // 로그인 로직
-window.login = async function() {
+window.login = async function () {
     const id = document.getElementById('login-id').value;
     const pw = document.getElementById('login-pw').value;
-    
+
     if (!id || !pw) return alert("아이디와 비밀번호를 입력하세요.");
 
     try {
@@ -86,12 +96,12 @@ window.login = async function() {
 }
 
 // 구글 로그인 로직
-window.googleLogin = async function() {
+window.googleLogin = async function () {
     const provider = new GoogleAuthProvider();
     try {
         const result = await signInWithPopup(auth, provider);
         const user = result.user;
-        
+
         // 구글 로그인 성공 시 Firestore에 사용자 정보 저장 (없을 경우)
         // (간단하게 구현하기 위해 중복 체크 없이 추가하거나, 필요 시 체크 로직 추가 가능)
         // 여기서는 로그인 성공 메시지만 띄웁니다.
@@ -104,7 +114,7 @@ window.googleLogin = async function() {
 }
 
 // 로그아웃
-window.logout = async function() {
+window.logout = async function () {
     await signOut(auth);
     alert('로그아웃 되었습니다.');
     window.showPage('home');
@@ -124,10 +134,10 @@ onAuthStateChanged(auth, (user) => {
         navLogin.classList.add('hidden');
         navSignup.classList.add('hidden');
         navLogout.classList.remove('hidden');
-        
+
         // 홈 화면에 로그인 정보 표시 (디버깅용)
         welcomeMsg.innerText = `환영합니다! ${user.displayName || '친구'} (${user.email}) 👋`;
-        
+
         // 관리자(ehdek) 계정인지 확인하여 글쓰기 권한 부여
         if (user.email && (user.email.toLowerCase() === 'ehdek@ourclass.com' || user.email.toLowerCase() === 'ehdek12345@gmail.com')) {
             writeArea.classList.remove('hidden');
@@ -148,7 +158,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // 가정통신문 글쓰기 (Firestore 저장)
-window.addNotice = async function() {
+window.addNotice = async function () {
     // 관리자 권한 체크
     const userEmail = auth.currentUser ? auth.currentUser.email.toLowerCase() : '';
     if (userEmail !== 'ehdek@ourclass.com' && userEmail !== 'ehdek12345@gmail.com') {
@@ -157,8 +167,8 @@ window.addNotice = async function() {
 
     const title = document.getElementById('notice-title').value;
     const content = document.getElementById('notice-content').value;
-    
-    if(!title || !content) return alert('내용을 입력하세요');
+
+    if (!title || !content) return alert('내용을 입력하세요');
 
     try {
         await addDoc(collection(db, "notices"), {
@@ -167,7 +177,7 @@ window.addNotice = async function() {
             date: new Date().toISOString().split('T')[0],
             timestamp: new Date() // 정렬을 위한 시간
         });
-        
+
         // 입력창 초기화
         document.getElementById('notice-title').value = '';
         document.getElementById('notice-content').value = '';
@@ -186,9 +196,9 @@ onSnapshot(q, (snapshot) => {
         const data = doc.data();
         const html = `
             <div class="notice-item">
-                <span class="notice-date">${data.date}</span>
+                <span class="notice-date"><i class="far fa-calendar-alt"></i> ${data.date}</span>
                 <div class="notice-title">${data.title}</div>
-                <p>${data.content}</p>
+                <div class="notice-content">${data.content.replace(/\n/g, '<br>')}</div>
             </div>
         `;
         list.insertAdjacentHTML('beforeend', html);
@@ -205,19 +215,19 @@ onSnapshot(userQ, (snapshot) => {
     snapshot.forEach((docSnap) => {
         const data = docSnap.data();
         const html = `
-            <div class="notice-item" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="user-item">
                 <div>
-                    <span class="notice-date">${data.joinedAt}</span>
-                    <div class="notice-title">${data.name} (${data.email.split('@')[0]})</div>
+                    <span class="notice-date">${data.joinedAt} 가입</span>
+                    <div class="notice-title" style="font-size: 1.1rem;">${data.name} <span style="font-weight:400; color:var(--text-muted); font-size:0.9rem;">(${data.email.split('@')[0]})</span></div>
                 </div>
-                <button onclick="deleteUser('${docSnap.id}')" style="background:#ff4444; color:white; border:none; padding:5px 10px; border-radius:5px; cursor:pointer;">삭제</button>
+                <button onclick="deleteUser('${docSnap.id}')" class="delete-btn"><i class="fas fa-trash-alt"></i> 삭제</button>
             </div>
         `;
         list.insertAdjacentHTML('beforeend', html);
     });
 });
 
-window.deleteUser = async function(docId) {
+window.deleteUser = async function (docId) {
     if (!confirm("정말 이 회원 정보를 목록에서 삭제하시겠습니까?")) return;
     try {
         await deleteDoc(doc(db, "users", docId));
